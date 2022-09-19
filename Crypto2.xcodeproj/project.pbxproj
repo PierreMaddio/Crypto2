@@ -95,6 +95,11 @@
 			isa = PBXGroup;
 			children = (
 				FA22643E28D91BE0000C9C38 /* Crypto2App.swift */,
+				FA22646A28D91CFE000C9C38 /* Utilities */,
+				FA22646B28D91D19000C9C38 /* Extensions */,
+				FA22646C28D91D22000C9C38 /* Services */,
+				FA22646D28D91D29000C9C38 /* Models */,
+				FA22646E28D91D5F000C9C38 /* Core */,
 				FA22644028D91BE0000C9C38 /* ContentView.swift */,
 				FA22644228D91BE2000C9C38 /* Assets.xcassets */,
 				FA22644428D91BE2000C9C38 /* Preview Content */,
@@ -125,6 +130,145 @@
 				FA22645B28D91BE2000C9C38 /* Crypto2UITestsLaunchTests.swift */,
 			);
 			path = Crypto2UITests;
+			sourceTree = "<group>";
+		};
+		FA22646A28D91CFE000C9C38 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		FA22646B28D91D19000C9C38 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		FA22646C28D91D22000C9C38 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		FA22646D28D91D29000C9C38 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		FA22646E28D91D5F000C9C38 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FA22646F28D91D83000C9C38 /* Launch */,
+				FA22647028D91D8B000C9C38 /* Components */,
+				FA22647128D91D95000C9C38 /* Home */,
+				FA22647228D91DA4000C9C38 /* Settings */,
+				FA22647328D91DB2000C9C38 /* Detail */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		FA22646F28D91D83000C9C38 /* Launch */ = {
+			isa = PBXGroup;
+			children = (
+				FA22647428D91E06000C9C38 /* Views */,
+			);
+			path = Launch;
+			sourceTree = "<group>";
+		};
+		FA22647028D91D8B000C9C38 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				FA22647528D91E20000C9C38 /* CoinImage */,
+				FA22647628D91E2B000C9C38 /* CircleButton */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		FA22647128D91D95000C9C38 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				FA22647728D91E48000C9C38 /* ViewModels */,
+				FA22647828D91E52000C9C38 /* Views */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		FA22647228D91DA4000C9C38 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				FA22647928D91E6D000C9C38 /* Views */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		FA22647328D91DB2000C9C38 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				FA22647B28D91E88000C9C38 /* ViewModels */,
+				FA22647A28D91E82000C9C38 /* Views */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		FA22647428D91E06000C9C38 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA22647528D91E20000C9C38 /* CoinImage */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CoinImage;
+			sourceTree = "<group>";
+		};
+		FA22647628D91E2B000C9C38 /* CircleButton */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = CircleButton;
+			sourceTree = "<group>";
+		};
+		FA22647728D91E48000C9C38 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		FA22647828D91E52000C9C38 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA22647928D91E6D000C9C38 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA22647A28D91E82000C9C38 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		FA22647B28D91E88000C9C38 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
