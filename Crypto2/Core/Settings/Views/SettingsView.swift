@@ -6,6 +6,8 @@ struct SettingsView: View {
     let linkedinURL = URL(string: "https://www.linkedin.com/in/pierremaddio/")
     let coinGeckoURL = URL(string: "https://www.coingecko.com/")
     
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -29,7 +31,11 @@ struct SettingsView: View {
             .navigationTitle("Settings")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    XMarkButton()
+                    XMarkButton() { isTrue in
+                        if isTrue {
+                            dismiss()
+                        }
+                    }
                 }
             }
         }

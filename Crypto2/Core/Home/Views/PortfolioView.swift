@@ -7,6 +7,8 @@ struct PortfolioView: View {
     @State private var quantityText: String = ""
     @State private var showCheckMark: Bool = false
     
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -26,7 +28,11 @@ struct PortfolioView: View {
             .navigationTitle("Edit Portfolio")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    XMarkButton()
+                    XMarkButton() { isTrue in
+                        if isTrue {
+                            dismiss()
+                        }
+                    }
                 }
             }
             .toolbar {
