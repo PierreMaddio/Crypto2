@@ -13,7 +13,7 @@ class DeveloperPreview {
     static let instance = DeveloperPreview()
     private init() { }
     
-    let homeVM = HomeViewModel()
+    let homeVM = HomeViewModel() // coinDataService: MockCoinDataService()
     
     let stat1 = Statistic(title: "Market Cap", value: "$12.5Bn", percentageChange: 25.45)
     let stat2 = Statistic(title: "Total Volume", value: "$1.23Tn")

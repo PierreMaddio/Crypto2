@@ -13,7 +13,7 @@ class HomeViewModel: ObservableObject {
     @Published var sortOption: SortOption = .holdings
     
     // dataService initialize CoinDataService(), with init() get the coin automatically
-    private let coinDataService = CoinDataService()
+    private let coinDataService: CoinDataServiceProtocol //
     private let marketDataService = MarketDataService()
     private let portfolioDataService = PortfolioDataService()
     private var cancellables = Set<AnyCancellable>()
@@ -22,14 +22,15 @@ class HomeViewModel: ObservableObject {
         case rank, rankReversed, holdings, holdingsReversed, price, priceReversed
     }
     
-    init() {
+    init(coinDataService: CoinDataServiceProtocol = CoinDataService()) { //
+        self.coinDataService = coinDataService
         addSubscribers()
     }
     
     func addSubscribers() {
         // updates allCoins
         $searchText
-            .combineLatest(coinDataService.$allCoins, $sortOption)
+            .combineLatest($allCoins, $sortOption) //
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map(filterAndSortCoins)
             .sink { [weak self] (returnedCoins) in
@@ -62,9 +63,10 @@ class HomeViewModel: ObservableObject {
         portfolioDataService.updatePortfolio(coin: coin, amount: amount)
     }
     
-    func reloadData() {
+    @MainActor //
+    func reloadData() async throws{ //
         isLoading = true
-        coinDataService.getCoins()
+        self.allCoins = try await coinDataService.getCoins() //
         marketDataService.getData()
         // device vibration
         HapticManager.notification(type: .success)

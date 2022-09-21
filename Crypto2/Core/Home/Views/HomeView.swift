@@ -53,6 +53,13 @@ struct HomeView: View {
                 isActive: $showDetailView,
                 label: { EmptyView() })
         )
+        .task { //
+            do{
+                try await vm.reloadData()
+            }catch{
+                print(error)
+            }
+        }
     }
 }
 
@@ -182,16 +189,22 @@ extension HomeView {
                 }
             }
             
-            Button {
-                withAnimation(.linear(duration: 2)) {
-                    // reload Data
-                    vm.reloadData()
-                }
+            Button { //
+                //withAnimation(.linear(duration: 2)) {
+                // reload Data
+                Task(operation: {
+                    do{
+                        try await vm.reloadData()
+                    }catch{
+                        print(error)
+                    }
+                })
+                
             } label: {
                 Image(systemName: "goforward")
             }
             .rotationEffect(Angle(degrees: vm.isLoading ? 360 : 0), anchor: .center)
-
+            
         }
         .font(.caption)
         .foregroundColor(Color.theme.secondaryText)
