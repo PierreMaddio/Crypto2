@@ -51,14 +51,14 @@ class NetworkingManager: NetworkProtocol {
     }
 }
 
-protocol NetworkProtocol{
+protocol NetworkProtocol {
     func download(url: URL) async throws -> Data
 }
 
 struct MockNetworkManager : NetworkProtocol {
     var data: Data?
     
-    func download(url: URL) async throws -> Data{
+    func download(url: URL) async throws -> Data {
         if Bool.random(){
             return self.data ?? " ".data(using: .utf8)!
         }else{

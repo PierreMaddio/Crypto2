@@ -2,6 +2,7 @@
 import Foundation
 import Combine
 
+
 class HomeViewModel: ObservableObject {
     // anything subscribed to the this publisher will then get updated
     @Published var statistics: [Statistic] = []
@@ -13,8 +14,8 @@ class HomeViewModel: ObservableObject {
     @Published var sortOption: SortOption = .holdings
     
     // dataService initialize CoinDataService(), with init() get the coin automatically
-    private let coinDataService: CoinDataServiceProtocol //
-    private let marketDataService = MarketDataService()
+    private let coinDataService: CoinDataServiceProtocol
+    private let marketDataService: MarketDataServiceProtocol
     private let portfolioDataService = PortfolioDataService()
     private var cancellables = Set<AnyCancellable>()
     
@@ -22,15 +23,16 @@ class HomeViewModel: ObservableObject {
         case rank, rankReversed, holdings, holdingsReversed, price, priceReversed
     }
     
-    init(coinDataService: CoinDataServiceProtocol = CoinDataService()) { //
+    init(coinDataService: CoinDataServiceProtocol = CoinDataService(), marketDataService: MarketDataServiceProtocol = MarketDataService()) {
         self.coinDataService = coinDataService
+        self.marketDataService = marketDataService
         addSubscribers()
     }
     
     func addSubscribers() {
         // updates allCoins
         $searchText
-            .combineLatest($allCoins, $sortOption) //
+            .combineLatest($allCoins, $sortOption)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map(filterAndSortCoins)
             .sink { [weak self] (returnedCoins) in
@@ -49,25 +51,28 @@ class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
         
         // updates marketData
-        marketDataService.$marketData
-            .combineLatest($portfolioCoins)
-            .map(markGlobalMarketData)
-            .sink { [weak self] (returnedStats) in
-                self?.statistics = returnedStats
-                self?.isLoading = false
-            }
-            .store(in: &cancellables)
+        //        marketDataService.$marketData
+        //            .combineLatest($portfolioCoins)
+        //            .map(markGlobalMarketData)
+        //            .sink { [weak self] (returnedStats) in
+        //                self?.statistics = returnedStats
+        //                self?.isLoading = false
+        //            }
+        //            .store(in: &cancellables)
     }
     
     func updatePortfolio(coin: Coin, amount: Double) {
         portfolioDataService.updatePortfolio(coin: coin, amount: amount)
     }
     
-    @MainActor //
-    func reloadData() async throws{ //
+    @MainActor
+    func reloadData() async throws{
         isLoading = true
-        self.allCoins = try await coinDataService.getCoins() //
-        marketDataService.getData()
+        self.allCoins = try await coinDataService.getCoins()
+        if let result = try? await marketDataService.getData() {
+            let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: self.allCoins)
+            self.statistics = statistics
+        }
         // device vibration
         HapticManager.notification(type: .success)
     }

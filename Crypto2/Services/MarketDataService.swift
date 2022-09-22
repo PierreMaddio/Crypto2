@@ -1,7 +1,29 @@
 
 import Foundation
-import Combine
 
+class MarketDataService: MarketDataServiceProtocol {
+    var networkManager: NetworkProtocol = NetworkingManager()
+    
+    func getData() async throws -> GlobalData {
+        let urlString = "https://api.coingecko.com/api/v3/global"
+        guard let url = URL(string: urlString) else {
+            throw NetworkingManager.NetworkingError.invalidURLString
+        }
+        return try await getObject(url: url)
+    }
+    
+    func getObject<C>(url: URL) async throws -> C where C : Codable {
+        let data = try await networkManager.download(url: url)
+        let decoder = JSONDecoder()
+        return try decoder.decode(C.self, from: data)
+    }
+}
+
+protocol MarketDataServiceProtocol {
+    func getData() async throws -> GlobalData
+}
+
+/*
 class MarketDataService {
     
     @Published var marketData: MarketData? = nil
@@ -25,3 +47,4 @@ class MarketDataService {
             })
     }
 }
+*/

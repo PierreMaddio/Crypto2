@@ -6,6 +6,7 @@ struct PortfolioView: View {
     @State private var selectedCoin: Coin? = nil
     @State private var quantityText: String = ""
     @State private var showCheckMark: Bool = false
+    @State private var animationAmount = 1.0
     
     @Environment(\.dismiss) var dismiss
     
@@ -121,7 +122,7 @@ extension PortfolioView {
                 Text(getCurrentValue().asCurrencyWith2Decimals())
             }
         }
-        .animation(.none)
+        .animation(.none, value: animationAmount)
         .padding()
         .font(.headline)
     }

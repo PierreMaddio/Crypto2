@@ -53,7 +53,7 @@ struct HomeView: View {
                 isActive: $showDetailView,
                 label: { EmptyView() })
         )
-        .task { //
+        .task {
             do{
                 try await vm.reloadData()
             }catch{
