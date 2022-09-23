@@ -52,7 +52,7 @@ class HomeViewModel: ObservableObject {
         
         // updates marketData
         //        marketDataService.$marketData
-        //            .combineLatest($portfolioCoins)
+        //            .combineLatest($portfolioCoins) // ???
         //            .map(markGlobalMarketData)
         //            .sink { [weak self] (returnedStats) in
         //                self?.statistics = returnedStats
@@ -69,6 +69,7 @@ class HomeViewModel: ObservableObject {
     func reloadData() async throws{
         isLoading = true
         self.allCoins = try await coinDataService.getCoins()
+        
         if let result = try? await marketDataService.getData() {
             let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: self.allCoins)
             self.statistics = statistics
