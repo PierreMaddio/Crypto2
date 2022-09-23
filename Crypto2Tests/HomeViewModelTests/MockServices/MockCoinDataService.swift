@@ -8,7 +8,7 @@
 @testable import Crypto2
 
 class MockCoinDataService: CoinDataServiceProtocol {
-    var networkManager: NetworkProtocol = NetworkingManager()
+    var networkManager: NetworkProtocol = MockNetworkManager()
     
     func getCoins() async throws -> [Coin]{
         
