@@ -55,6 +55,12 @@ struct DetailView: View {
             ToolbarItem(placement: .navigationBarTrailing) {
                 navigationbarTrailingItems
             }
+        }.task {
+            do{
+                try await vm.reloadData()
+            }catch{
+                print(error)
+            }
         }
     }
 }

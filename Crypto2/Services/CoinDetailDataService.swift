@@ -1,7 +1,7 @@
 
 import Foundation
 import Combine
-
+/*
 class CoinDetailDataService {
     @Published var coinDetails: CoinDetail? = nil
     
@@ -26,10 +26,10 @@ class CoinDetailDataService {
             })
     }
 }
+*/
 
-/*
 class CoinDetailDataService: CoinDetailDataServiceProtocol {
-    var coinDetails: CoinDetail?
+    //var coinDetails: CoinDetail?
     
     var networkManager: NetworkProtocol = NetworkingManager()
     let coin: Coin
@@ -44,7 +44,7 @@ class CoinDetailDataService: CoinDetailDataServiceProtocol {
             throw NetworkingManager.NetworkingError.invalidURLString
         }
         let coinDetail: CoinDetail = try await getObject(url: url)
-        self.coinDetails = coinDetail
+        //self.coinDetails = coinDetail
         return coinDetail
     }
     
@@ -57,7 +57,7 @@ class CoinDetailDataService: CoinDetailDataServiceProtocol {
 
 protocol CoinDetailDataServiceProtocol {
     func getCoinDetails() async throws -> CoinDetail
-    var coinDetails: CoinDetail? { get set }
+    //var coinDetails: CoinDetail? { get set }
 }
 
 class MockCoinDetailDataService: CoinDetailDataServiceProtocol {
@@ -83,7 +83,7 @@ class MockCoinDetailDataService: CoinDetailDataServiceProtocol {
         }).value
     }
 }
-*/
+
 
 /*
 class CoinDetailDataService: CoinDetailDataServiceProtocol {

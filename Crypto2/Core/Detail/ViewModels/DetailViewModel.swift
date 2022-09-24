@@ -1,14 +1,14 @@
 
 import Foundation
 import Combine
-
+@MainActor
 class DetailViewModel: ObservableObject {
     @Published var overviewStatistics: [Statistic] = []
     @Published var additionalStatistics: [Statistic] = []
     @Published var coinDescription: String? = nil
     @Published var websiteURL: String? = nil
     @Published var redditURL: String? = nil
-    
+    @Published var coinDetail: CoinDetail?
     @Published var coin: Coin
     private let coinDetailService: CoinDetailDataService
     private var cancellables = Set<AnyCancellable>()
@@ -21,7 +21,7 @@ class DetailViewModel: ObservableObject {
     
     private func addSubscribers() {
         // we're taking our coinDetails, we're taking our coin, we are mapping them into statistic, we're getting those returned arrays and then setting up on our view
-        coinDetailService.$coinDetails
+        $coinDetail
             .combineLatest($coin)
             .map(mapDataToStatistics)
             .sink { [weak self] (returnedArrays) in
@@ -30,7 +30,7 @@ class DetailViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
-        coinDetailService.$coinDetails
+        $coinDetail
             .sink { [weak self] (returnedCoinDetails) in
                 self?.coinDescription = returnedCoinDetails?.readableDescription
                 self?.websiteURL = returnedCoinDetails?.links?.homepage?.first
@@ -38,7 +38,9 @@ class DetailViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
-    
+    func reloadData() async throws{
+        self.coinDetail = try await coinDetailService.getCoinDetails()
+    }
     private func mapDataToStatistics(coinDetail: CoinDetail?, coin: Coin) -> (overview: [Statistic], additional: [Statistic]) {
         let overviewArray = createOverviewArray(coin: coin)
         let additionalArray = createAdditionalArray(coinDetail: coinDetail, coin: coin)

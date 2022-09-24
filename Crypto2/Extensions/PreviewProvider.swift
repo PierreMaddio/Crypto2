@@ -12,7 +12,7 @@ extension PreviewProvider {
 class DeveloperPreview {
     static let instance = DeveloperPreview()
     private init() { }
-    
+    @MainActor
     let homeVM = HomeViewModel() // coinDataService: MockCoinDataService()
     
     let stat1 = Statistic(title: "Market Cap", value: "$12.5Bn", percentageChange: 25.45)

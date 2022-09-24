@@ -55,7 +55,11 @@ struct HomeView: View {
         )
         .task {
             do{
-                try await vm.reloadData()
+                
+                let (allCoins, statictics) = try await vm.reloadData()
+                self.vm.allCoins = allCoins
+                self.vm.statistics = statictics
+                try await vm.portfolioListener()
             }catch{
                 print(error)
             }
@@ -108,7 +112,7 @@ extension HomeView {
     
     private var allCoinsList: some View {
         List {
-            ForEach(vm.allCoins) { coin in
+            ForEach(!vm.searchText.isEmpty ? vm.filteredCoins : vm.allCoins) { coin in
                 CoinRowView(coin: coin, showHoldingsColumn: false)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
                     .onTapGesture {

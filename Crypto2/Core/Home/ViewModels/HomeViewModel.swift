@@ -2,7 +2,7 @@
 import Foundation
 import Combine
 
-
+@MainActor
 class HomeViewModel: ObservableObject {
     // anything subscribed to the this publisher will then get updated
     @Published var statistics: [Statistic] = []
@@ -10,12 +10,12 @@ class HomeViewModel: ObservableObject {
     @Published var portfolioCoins: [Coin] = []
     @Published var isLoading: Bool = false
     @Published var searchText: String = ""
-    
+    @Published var filteredCoins: [Coin] = []
     @Published var sortOption: SortOption = .holdings
     
     // dataService initialize CoinDataService(), with init() get the coin automatically
     private let coinDataService: CoinDataServiceProtocol
-    private let marketDataService: MarketDataServiceProtocol
+    private var marketDataService: MarketDataServiceProtocol
     private let portfolioDataService = PortfolioDataService()
     private var cancellables = Set<AnyCancellable>()
     
@@ -36,19 +36,19 @@ class HomeViewModel: ObservableObject {
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map(filterAndSortCoins)
             .sink { [weak self] (returnedCoins) in
-                self?.allCoins = returnedCoins
+                self?.filteredCoins = returnedCoins
             }
             .store(in: &cancellables)
         
-        // updates portfolio
-        $allCoins
-            .combineLatest(portfolioDataService.$savedEntities)
-            .map(mapAllCoinsToPortfolioCoins) // the parameters are the same as the subscribers
-            .sink { [weak self] (returnedCoins) in
-                guard let self = self else { return }
-                self.portfolioCoins = self.sortPortfolioCoinsIfNeeded(coins: returnedCoins)
-            }
-            .store(in: &cancellables)
+       //  updates portfolio
+//        $allCoins
+//            .combineLatest(portfolioDataService.$savedEntities)
+//            .map(mapAllCoinsToPortfolioCoins) // the parameters are the same as the subscribers
+//            .sink { [weak self] (returnedCoins) in
+//                guard let self = self else { return }
+//                self.portfolioCoins = self.sortPortfolioCoinsIfNeeded(coins: returnedCoins)
+//            }
+//            .store(in: &cancellables)
         
         // updates marketData
         //        marketDataService.$marketData
@@ -64,18 +64,34 @@ class HomeViewModel: ObservableObject {
     func updatePortfolio(coin: Coin, amount: Double) {
         portfolioDataService.updatePortfolio(coin: coin, amount: amount)
     }
-    
-    @MainActor
-    func reloadData() async throws{
-        isLoading = true
-        self.allCoins = try await coinDataService.getCoins()
+   
+    func portfolioListener() async throws{
+        print(#function)
+        let stream = try portfolioDataService.getPortfolio()
         
-        if let result = try? await marketDataService.getData() {
-            let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: self.allCoins)
-            self.statistics = statistics
+        for await entities in stream{
+            print("\(type(of: self)) :: \(#function) :: \(entities.count) \(allCoins.count)")
+            self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
+            print("\(type(of: self)) :: \(#function) :: \(self.portfolioCoins.count)")
         }
+    }
+    
+    func reloadData() async throws -> (allCoins: [Coin],statistics: [Statistic]){
+        isLoading = true
+        let allCoins = try await coinDataService.getCoins()
+        let result = try await marketDataService.getData()
+        
+        //if let result = try? await marketDataService.getData() {
+        let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: allCoins)
+        self.statistics = statistics
+        //}
         // device vibration
         HapticManager.notification(type: .success)
+        //
+        
+        //self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: saved)
+        
+        return (allCoins, statistics)
     }
     
     private func filterAndSortCoins(text: String, coins: [Coin], sort: SortOption) -> [Coin] {
