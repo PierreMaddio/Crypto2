@@ -14,7 +14,7 @@ final class HomeViewModelTests: XCTestCase {
         
     }
 
-    func test1() {
+    @MainActor func test1() {
         // given
         let mockCoinDataService = MockCoinDataService()
         let mockMarketDataService = MockMarketDataService()

@@ -20,7 +20,7 @@ class PortfolioDataService: NSObject {
         super.init()
     }
     
-    private func initializeFetchedResultsController() throws -> [PortfolioEntity]{
+    private func initializeFetchedResultsController() throws -> [PortfolioEntity] {
         print(#function)
         let request = NSFetchRequest<PortfolioEntity>(entityName: entityName)
         let lastNameSort = NSSortDescriptor(key: "coinID", ascending: true)
