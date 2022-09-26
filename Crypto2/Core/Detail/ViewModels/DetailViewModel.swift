@@ -1,6 +1,7 @@
 
 import Foundation
 import Combine
+
 @MainActor
 class DetailViewModel: ObservableObject {
     @Published var overviewStatistics: [Statistic] = []
@@ -38,6 +39,7 @@ class DetailViewModel: ObservableObject {
             }
             .store(in: &cancellables)
     }
+    
     func reloadData() async throws{
         self.coinDetail = try await coinDetailService.getCoinDetails()
     }
