@@ -1,6 +1,7 @@
 
 import SwiftUI
 
+// view to edit portfolio
 struct PortfolioView: View {
     @EnvironmentObject private var vm: HomeViewModel
     @State private var selectedCoin: Coin? = nil
