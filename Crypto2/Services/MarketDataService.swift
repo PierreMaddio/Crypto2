@@ -4,18 +4,28 @@ import Foundation
 class MarketDataService: MarketDataServiceProtocol {
     var networkManager: NetworkProtocol = NetworkingManager()
     
+    // session to be used to make the API call
+    let session: URLSession
+    
+    init(urlSession: URLSession = .shared) {
+            self.session = urlSession
+        }
+    
     func getData() async throws -> GlobalData {
         let urlString = "https://api.coingecko.com/api/v3/global"
         guard let url = URL(string: urlString) else {
             throw NetworkingManager.NetworkingError.invalidURLString
         }
-        return try await getObject(url: url)
-    }
-    
-    func getObject<C>(url: URL) async throws -> C where C : Codable {
-        let data = try await networkManager.download(url: url)
-        let decoder = JSONDecoder()
-        return try decoder.decode(C.self, from: data)
+        
+        let urlRequest = URLRequest(url: url)
+        let (data, response) = try await session.data(for: urlRequest)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else { fatalError("Error while fetching data") }
+        let decodedMarket = try JSONDecoder().decode(GlobalData.self, from: data)
+        
+        return decodedMarket
+        
+        //return try await getObject(url: url)
     }
 }
 

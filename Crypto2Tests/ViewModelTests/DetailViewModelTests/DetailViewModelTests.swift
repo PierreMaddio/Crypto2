@@ -8,16 +8,16 @@
 import XCTest
 @testable import Crypto2
 
-//final class DetailViewModelTests: XCTestCase {
-//    
-//    override func setUpWithError() throws {
-//        
-//    }
-//
-//    func test1() {
-//        // given
+final class DetailViewModelTests: XCTestCase {
+    
+    override func setUpWithError() throws {
+        
+    }
+
+    func test1() {
+        // given
 //        let coinDetailService = CoinDetailDataService(coin: <#T##Coin#>)
 //        let mockMarketDataService = MockCoinDetailDataService()
 //        let viewModel = DetailViewModel(coin: <#T##Coin#>)
-//    }
-//}
+    }
+}
