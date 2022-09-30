@@ -5,19 +5,19 @@ import Combine
 
 class CoinImageService {
     @Published var image: UIImage? = nil
-    
+
     private var imageSubscription: AnyCancellable?
     private let coin: Coin
     private let fileManager = LocalFileManager.instance
     private let folderName = "coin_images"
     private let imageName: String
-    
+
     init(coin: Coin) {
         self.coin = coin
         self.imageName = coin.id
         getCoinImage()
     }
-    
+
     private func getCoinImage() {
         // green code image cash
         if let savedImage = fileManager.getImage(imageName: imageName, folderName: folderName) {
@@ -28,10 +28,10 @@ class CoinImageService {
             //print("Downloading image now")
         }
     }
-    
+
     private func downloadCoinImage() {
         guard let url = URL(string: coin.image) else { return }
-        
+
         imageSubscription = NetworkingManager.download(url: url)
             .tryMap({ (data) -> UIImage? in
                 return UIImage(data: data)
@@ -48,8 +48,7 @@ class CoinImageService {
 
 /*
 class CoinImageService: CoinImageServiceProtocol {
-    var networkManager: NetworkProtocol = NetworkingManager()
-    var image: UIImage? = nil
+    @Published var image: UIImage? = nil
     
     private let coin: Coin
     private let fileManager = LocalFileManager.instance
@@ -77,12 +76,15 @@ class CoinImageService: CoinImageServiceProtocol {
         guard let url = URL(string: coin.image) else {
             throw NetworkingManager.NetworkingError.invalidURLString
         }
-        return try await getObject(url: url)
-    }
-    
-    func getObject<C>(url: URL) async throws -> C where C : UIImage {
-        let data = try await networkManager.download(url: url)
-        return UIImage(data: data) as! C
+        
+        let urlRequest = URLRequest(url: url)
+        let (data, response) = try await URLSession.shared.data(for: urlRequest)
+        
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            throw NetworkingManager.NetworkingError.serverError
+        }
+       
+        return UIImage(data: data)
     }
 }
 

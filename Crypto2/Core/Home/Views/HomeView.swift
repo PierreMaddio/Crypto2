@@ -54,13 +54,12 @@ struct HomeView: View {
                 label: { EmptyView() })
         )
         .task {
-            do{
-                
+            do {
                 let (allCoins, statictics) = try await vm.reloadData()
                 self.vm.allCoins = allCoins
                 self.vm.statistics = statictics
                 try await vm.portfolioListener()
-            }catch{
+            } catch {
                 print(error)
             }
         }
@@ -197,9 +196,9 @@ extension HomeView {
                 //withAnimation(.linear(duration: 2)) {
                 // reload Data
                 Task(operation: {
-                    do{
+                    do {
                         try await vm.reloadData()
-                    }catch{
+                    } catch {
                         print(error)
                     }
                 })
