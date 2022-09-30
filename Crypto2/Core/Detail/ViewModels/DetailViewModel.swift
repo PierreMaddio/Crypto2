@@ -11,7 +11,7 @@ class DetailViewModel: ObservableObject {
     @Published var redditURL: String? = nil
     @Published var coinDetail: CoinDetail?
     @Published var coin: Coin
-    private let coinDetailService: CoinDetailDataService
+    private let coinDetailService: CoinDetailDataService // protocol
     private var cancellables = Set<AnyCancellable>()
     
     init(coin: Coin) {
@@ -43,6 +43,7 @@ class DetailViewModel: ObservableObject {
     func reloadData() async throws{
         self.coinDetail = try await coinDetailService.getCoinDetails()
     }
+    
     private func mapDataToStatistics(coinDetail: CoinDetail?, coin: Coin) -> (overview: [Statistic], additional: [Statistic]) {
         let overviewArray = createOverviewArray(coin: coin)
         let additionalArray = createAdditionalArray(coinDetail: coinDetail, coin: coin)

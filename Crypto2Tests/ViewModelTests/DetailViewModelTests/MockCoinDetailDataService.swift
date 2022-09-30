@@ -9,16 +9,14 @@ import Foundation
 @testable import Crypto2
 
 class MockCoinDetailDataService: CoinDetailDataServiceProtocol {
-    var networkManager: NetworkProtocol = NetworkingManager()
-
     func getCoinDetails() async throws -> CoinDetail {
         return await Task(operation: {
             return CoinDetail(
-                id: "Sample",
-                symbol: "Sample",
-                name: "Sample",
-                blockTimeInMinutes: 0,
-                hashingAlgorithm: "Sample",
+                id: "bitcoin",
+                symbol: "btc",
+                name: "Bitcoin",
+                blockTimeInMinutes: 10,
+                hashingAlgorithm: "SHA-256",
                 description: nil,
                 links: nil
             )

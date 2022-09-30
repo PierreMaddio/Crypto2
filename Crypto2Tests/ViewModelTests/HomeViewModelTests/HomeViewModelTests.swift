@@ -9,16 +9,17 @@ import XCTest
 @testable import Crypto2
 
 final class HomeViewModelTests: XCTestCase {
+    var mockCoinDataService: MockCoinDataService!
+    var mockMarketDataService: MockMarketDataService!
+    var viewModel: HomeViewModel!
     
-    override func setUpWithError() throws {
-        
+    @MainActor override func setUpWithError() throws {
+        mockCoinDataService = MockCoinDataService()
+        mockMarketDataService = MockMarketDataService()
+        viewModel = HomeViewModel(coinDataService: mockCoinDataService, marketDataService: mockMarketDataService)
     }
 
     @MainActor func test1() {
-        // given
-        let mockCoinDataService = MockCoinDataService()
-        let mockMarketDataService = MockMarketDataService()
-        let viewModel = HomeViewModel(coinDataService: mockCoinDataService, marketDataService: mockMarketDataService)
         // when
         let isLoading = viewModel.isLoading
         // then
