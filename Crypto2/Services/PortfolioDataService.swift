@@ -2,15 +2,15 @@
 import Foundation
 import CoreData
 
-class PortfolioDataService: NSObject {
+class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     private let container: NSPersistentContainer
     private let containerName: String = "PortfolioContainer"
     private let entityName: String = "PortfolioEntity"
     private var fetchedResultsController: NSFetchedResultsController<PortfolioEntity>!
-    //@Published var savedEntities: [PortfolioEntity] = []
+ 
     private var handler: (([PortfolioEntity]) -> Void)?
     
-    override init() {
+    required override init() {
         container = NSPersistentContainer(name: containerName)
         container.loadPersistentStores { (_, error )in
             if let error = error {
@@ -53,12 +53,20 @@ class PortfolioDataService: NSObject {
     }
     
     // MARK: - PRIVATE
-    func getPortfolio() throws -> AsyncStream<[PortfolioEntity]> {
+    func getPortfolio() throws -> AsyncStream<[PortfolioEntityProtocol]> {
         let initial = try initializeFetchedResultsController()
         return AsyncStream { continuation in
             continuation.yield(initial)
             handler = { entities in
                 continuation.yield(entities)
+            }
+            continuation.onTermination = { [ self] _ in
+                Task{
+                    await MainActor.run {
+                        fetchedResultsController.delegate = nil
+                        handler = nil
+                    }
+                }
             }
         }
     }
@@ -101,6 +109,97 @@ extension PortfolioDataService: NSFetchedResultsControllerDelegate {
             handler((controller.fetchedObjects as? [PortfolioEntity]) ?? [])
         }else{
             print("\(type(of: self)) :: \(#function) :: No Controller handler set")
+        }
+    }
+}
+
+protocol PortfolioDataServiceProtocol {
+     init()
+    
+    // MARK: - PUBLIC
+    func updatePortfolio(coin: Coin, amount: Double)
+    func getPortfolio() throws -> AsyncStream<[any PortfolioEntityProtocol]>
+}
+
+protocol PortfolioEntityProtocol{
+    var amount: Double {get set}
+    var coinID: String? {get set}
+}
+
+extension PortfolioEntity: PortfolioEntityProtocol{
+
+}
+
+class MockPortfolioEntity: PortfolioEntityProtocol, Hashable {
+    static func == (lhs: MockPortfolioEntity, rhs: MockPortfolioEntity) -> Bool {
+        lhs.amount == rhs.amount && lhs.coinID == rhs.coinID
+    }
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(amount)
+        hasher.combine(coinID)
+    }
+    var amount: Double = 0.0
+    
+    var coinID: String?
+    
+    init(amount: Double, coinID: String? = nil) {
+        self.amount = amount
+        self.coinID = coinID
+    }
+    
+}
+
+class MockPortfolioDataService: PortfolioDataServiceProtocol {
+    var portfolioEntities: Set<MockPortfolioEntity> = .init()
+    private var handler: (([MockPortfolioEntity]) -> Void)?
+    
+    required init(){}
+    
+    func updatePortfolio(coin: Coin, amount: Double) {
+        if let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) {
+            if amount > 0 {
+                print("\(#function) ::  update")
+                update(entity: entity, amount: amount)
+            } else {
+                print("\(#function) ::  delete")
+                delete(entity: entity)
+            }
+        } else {
+            print("\(#function) ::  add")
+            add(coin: coin, amount: amount)
+        }
+    }
+    
+    func getPortfolio() throws -> AsyncStream<[any PortfolioEntityProtocol]> {
+        AsyncStream { continuation in
+            continuation.yield(Array(portfolioEntities))
+            handler = { entities in
+                continuation.yield(entities)
+            }
+        }
+    }
+    
+    private func add(coin: Coin, amount: Double) {
+        let entity = MockPortfolioEntity(amount: amount, coinID: coin.id)
+        applyChanges()
+    }
+    
+    private func update(entity: MockPortfolioEntity, amount: Double) {
+        entity.amount = amount
+        applyChanges()
+    }
+    
+    private func delete(entity: MockPortfolioEntity) {
+        print(#function)
+        portfolioEntities.remove(entity)
+        applyChanges()
+    }
+    
+    func applyChanges(){
+        if let handler = handler{
+            handler(Array(portfolioEntities))
+        } else {
+            print("No handler set")
         }
     }
 }

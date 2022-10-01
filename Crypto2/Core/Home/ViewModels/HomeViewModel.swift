@@ -6,7 +6,7 @@ import Combine
 class HomeViewModel: ObservableObject {
     private let coinDataService: CoinDataServiceProtocol
     private var marketDataService: MarketDataServiceProtocol
-    private let portfolioDataService = PortfolioDataService()
+    private let portfolioDataService: PortfolioDataServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
     // anything subscribed to the this publisher will then get updated
@@ -63,9 +63,10 @@ class HomeViewModel: ObservableObject {
         }
     }
 
-    init(coinDataService: CoinDataServiceProtocol = CoinDataService(), marketDataService: MarketDataServiceProtocol = MarketDataService()) {
+    init(coinDataService: CoinDataServiceProtocol = CoinDataService(), marketDataService: MarketDataServiceProtocol = MarketDataService(), portfolioDataService:  PortfolioDataServiceProtocol = PortfolioDataService()) {
         self.coinDataService = coinDataService
         self.marketDataService = marketDataService
+        self.portfolioDataService = portfolioDataService
         addSubscribers()
     }
     
@@ -133,14 +134,12 @@ class HomeViewModel: ObservableObject {
         let allCoins = try await coinDataService.getCoins()
         let result = try await marketDataService.getData()
         
-        //if let result = try? await marketDataService.getData() {
         let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
         self.statistics = statistics
-        //}
+
         // device vibration
         HapticManager.notification(type: .success)
         
-        //self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: saved)
         return (allCoins, statistics)
     }
     
@@ -188,13 +187,12 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    private func mapAllCoinsToPortfolioCoins(allCoins: [Coin], portfolioEntities: [PortfolioEntity]) -> [Coin] {
+    private func mapAllCoinsToPortfolioCoins(allCoins: [Coin], portfolioEntities: [PortfolioEntityProtocol]) -> [Coin] {
         allCoins
             .compactMap { (coin) -> Coin? in
                 guard let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) else {
                     return nil
                 }
-                // print("entity: \(entity.entity) : amount: \(entity.amount)")
                 return coin.updateHoldings(amount: entity.amount)
             }
     }

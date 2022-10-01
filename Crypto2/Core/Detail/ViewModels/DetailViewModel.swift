@@ -11,12 +11,12 @@ class DetailViewModel: ObservableObject {
     @Published var redditURL: String? = nil
     @Published var coinDetail: CoinDetail?
     @Published var coin: Coin
-    private let coinDetailService: CoinDetailDataService // protocol
+    private let coinDetailService: CoinDetailDataServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    init(coin: Coin) {
+    init(coin: Coin, coinDetailService: CoinDetailDataServiceProtocolStore = .api) {
         self.coin = coin
-        self.coinDetailService = CoinDetailDataService(coin: coin)
+        self.coinDetailService = coinDetailService.getService(coin: coin)
         self.addSubscribers()
     }
     
@@ -99,3 +99,19 @@ class DetailViewModel: ObservableObject {
         return additionalArray
     }
 }
+
+enum CoinDetailDataServiceProtocolStore{
+    case api
+    case mock
+    
+    func getService(coin: Coin) -> any CoinDetailDataServiceProtocol{
+        switch self {
+        case .api:
+            return CoinDetailDataService(coin: coin)
+        case .mock:
+            return MockCoinDetailDataService(coin: coin)
+        }
+    }
+}
+
+
