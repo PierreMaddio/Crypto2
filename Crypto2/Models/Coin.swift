@@ -112,3 +112,11 @@ struct Coin: Identifiable, Codable {
 struct SparklineIn7D: Codable {
     let price: [Double]?
 }
+
+extension Sequence where Element == Coin{
+    var totalValue: Double{
+        self.map { coin in
+            coin.currentHoldingsValue
+        }.reduce(0, +)
+    }
+}

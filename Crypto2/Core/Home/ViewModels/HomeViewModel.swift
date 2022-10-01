@@ -11,6 +11,7 @@ class HomeViewModel: ObservableObject {
     
     // anything subscribed to the this publisher will then get updated
     @Published var statistics: [Statistic] = []
+ 
     @Published var isLoading: Bool = false
     @Published var allCoinsSearchText: String = ""
     @Published var portfolioSearchText: String = ""
@@ -118,6 +119,11 @@ class HomeViewModel: ObservableObject {
         for await entities in stream{
             print("\(type(of: self)) :: \(#function) :: \(entities.count) \(allCoins.count)")
             self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
+            let result = try await marketDataService.getData()
+            
+            //if let result = try? await marketDataService.getData() {
+            let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
+            self.statistics = statistics
             print("\(type(of: self)) :: \(#function) :: \(self.portfolioCoins.count)")
         }
     }
@@ -128,7 +134,7 @@ class HomeViewModel: ObservableObject {
         let result = try await marketDataService.getData()
         
         //if let result = try? await marketDataService.getData() {
-        let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: allCoins)
+        let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
         self.statistics = statistics
         //}
         // device vibration
