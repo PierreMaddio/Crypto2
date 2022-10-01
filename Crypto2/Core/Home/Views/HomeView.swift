@@ -23,16 +23,19 @@ struct HomeView: View {
             VStack {
                 homeHeader
                 HomeStatsView(showPortfolio: $showPortfolio)
-                SearchBarView(searchText: $vm.searchText)
-                columnTitles
+                
                 
                 if !showPortfolio {
+                    SearchBarView(searchText: $vm.allCoinsSearchText)
+                    columnTitles
                     allCoinsList
                         .transition(.move(edge: .leading))
                 }
                 if showPortfolio {
+                    SearchBarView(searchText: $vm.portfolioSearchText)
+                    columnTitles
                     ZStack(alignment: .top) {
-                        if vm.portfolioCoins.isEmpty && vm.searchText.isEmpty {
+                        if vm.portfolioCoins.isEmpty && vm.allCoinsSearchText.isEmpty {
                             portfolioEmptyText
                         } else {
                             portfolioCoinList
@@ -125,7 +128,7 @@ extension HomeView {
     
     private var portfolioCoinList: some View {
         List {
-            ForEach(vm.portfolioViewCoins) { coin in
+            ForEach(!vm.portfolioSearchText.isEmpty ? vm.filteredCoins : vm.portfolioViewCoins) { coin in
                 CoinRowView(coin: coin, showHoldingsColumn: true)
                     .listRowInsets(.init(top: 10, leading: 0, bottom: 10, trailing: 10))
                     .onTapGesture {
@@ -135,6 +138,11 @@ extension HomeView {
             }
         }
         .listStyle(PlainListStyle())
+//        .onAppear {
+//            Task {
+//                try await vm.reloadData()
+//            }
+//        }
     }
     
     private var portfolioEmptyText: some View {

@@ -12,8 +12,8 @@ class HomeViewModel: ObservableObject {
     // anything subscribed to the this publisher will then get updated
     @Published var statistics: [Statistic] = []
     @Published var isLoading: Bool = false
-    @Published var searchText: String = ""
-    
+    @Published var allCoinsSearchText: String = ""
+    @Published var portfolioSearchText: String = ""
     @Published var allCoins: [Coin] = [] // All 250
     @Published var filteredCoins: [Coin] = [] // After a search
     @Published var portfolioCoins: [Coin] = [] // Saved portfolio
@@ -26,7 +26,7 @@ class HomeViewModel: ObservableObject {
     // Show on the home page
     var homeViewCoins: [Coin] {
         // searching, show only searched coins
-        if !searchText.isEmpty {
+        if !allCoinsSearchText.isEmpty {
             return filteredCoins
         }
         // sorting, show only sorted coins
@@ -44,9 +44,10 @@ class HomeViewModel: ObservableObject {
     
     var portfolioViewCoins: [Coin] {
         // searching, show only searched coins
-        if !searchText.isEmpty {
-            return filteredCoins
+        if !allCoinsSearchText.isEmpty {
+            return portfolioCoins
         }
+        // else show filteredPortfolioCoins
 
         // sorting, show only portfolio sorted coins
         switch sortOption {
@@ -69,7 +70,7 @@ class HomeViewModel: ObservableObject {
     
     func addSubscribers() {
         // updates allCoins
-        $searchText
+        $allCoinsSearchText
             .combineLatest($allCoins, $sortOption)
             .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
             .map(filterAndSortCoins)
@@ -77,7 +78,14 @@ class HomeViewModel: ObservableObject {
                 self?.filteredCoins = returnedCoins
             }
             .store(in: &cancellables)
-        
+        $portfolioSearchText
+            .combineLatest($portfolioCoins, $sortOption)
+            .debounce(for: .seconds(0.5), scheduler: DispatchQueue.main)
+            .map(filterAndSortCoins)
+            .sink { [weak self] (returnedCoins) in
+                self?.filteredCoins = returnedCoins
+            }
+            .store(in: &cancellables)
        //  updates portfolio
 //        $allCoins
 //            .combineLatest(portfolioDataService.$savedEntities)
