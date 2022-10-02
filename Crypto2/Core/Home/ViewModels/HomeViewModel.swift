@@ -114,18 +114,13 @@ class HomeViewModel: ObservableObject {
     }
    
     func portfolioListener() async throws {
-        print(#function)
         let stream = try portfolioDataService.getPortfolio()
         
-        for await entities in stream{
-            print("\(type(of: self)) :: \(#function) :: \(entities.count) \(allCoins.count)")
+        for await entities in stream {
             self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
             let result = try await marketDataService.getData()
-            
-            //if let result = try? await marketDataService.getData() {
             let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
             self.statistics = statistics
-            print("\(type(of: self)) :: \(#function) :: \(self.portfolioCoins.count)")
         }
     }
     
@@ -175,17 +170,17 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    private func sortPortfolioCoinsIfNeeded(coins: [Coin]) -> [Coin] {
-        // will only sort by holdings or reversed holdings if needed
-        switch sortOption {
-        case .holdings:
-            return coins.sorted(by: { $0.currentHoldingsValue > $1.currentHoldingsValue })
-        case .holdingsReversed:
-            return coins.sorted(by: { $0.currentHoldingsValue < $1.currentHoldingsValue })
-        default:
-            return coins
-        }
-    }
+//    private func sortPortfolioCoinsIfNeeded(coins: [Coin]) -> [Coin] {
+//        // will only sort by holdings or reversed holdings if needed
+//        switch sortOption {
+//        case .holdings:
+//            return coins.sorted(by: { $0.currentHoldingsValue > $1.currentHoldingsValue })
+//        case .holdingsReversed:
+//            return coins.sorted(by: { $0.currentHoldingsValue < $1.currentHoldingsValue })
+//        default:
+//            return coins
+//        }
+//    }
     
     private func mapAllCoinsToPortfolioCoins(allCoins: [Coin], portfolioEntities: [PortfolioEntityProtocol]) -> [Coin] {
         allCoins

@@ -21,7 +21,6 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     }
     
     private func initializeFetchedResultsController() throws -> [PortfolioEntity] {
-        print(#function)
         let request = NSFetchRequest<PortfolioEntity>(entityName: entityName)
         let lastNameSort = NSSortDescriptor(key: "coinID", ascending: true)
         request.sortDescriptors = [lastNameSort]
@@ -121,12 +120,12 @@ protocol PortfolioDataServiceProtocol {
     func getPortfolio() throws -> AsyncStream<[any PortfolioEntityProtocol]>
 }
 
-protocol PortfolioEntityProtocol{
+protocol PortfolioEntityProtocol {
     var amount: Double {get set}
     var coinID: String? {get set}
 }
 
-extension PortfolioEntity: PortfolioEntityProtocol{
+extension PortfolioEntity: PortfolioEntityProtocol {
 
 }
 
@@ -195,8 +194,8 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
         applyChanges()
     }
     
-    func applyChanges(){
-        if let handler = handler{
+    func applyChanges() {
+        if let handler = handler {
             handler(Array(portfolioEntities))
         } else {
             print("No handler set")
