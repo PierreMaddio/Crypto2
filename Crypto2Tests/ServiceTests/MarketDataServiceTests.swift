@@ -13,7 +13,7 @@ final class MarketDataServiceTests: XCTestCase {
     var urlSession: URLSession!
     var sampleMarketData: GlobalData!
 
-    override func setUpWithError() throws {
+    override func setUp() {
         // Set url session for mock networking
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
@@ -58,18 +58,12 @@ final class MarketDataServiceTests: XCTestCase {
         // set blank urlString
         marketDataService.urlString = ""
         
-        // Set mock data
-        let mockData = try JSONEncoder().encode(sampleMarketData)
-        
-        // Return data in mock request handler
-        MockURLProtocol.requestHandler = { request in
-            return (HTTPURLResponse(), mockData)
-        }
-        
         do {
             _ = try await marketDataService.getData()
             XCTFail("error was not thrown")
-        } catch { }
+        } catch {
+            XCTAssertEqual(error as! NetworkingManager.NetworkingError, NetworkingManager.NetworkingError.invalidURLString)
+        }
     }
     
     func testBadResponseStatusCode() async throws {
@@ -79,14 +73,10 @@ final class MarketDataServiceTests: XCTestCase {
         // Set mock data
         let mockData = try JSONEncoder().encode(sampleMarketData)
         
-        // Return data in mock request handler
-        MockURLProtocol.requestHandler = { request in
-            return (HTTPURLResponse(), mockData)
-        }
-        
         // Set urlResponse statusCode 500
         let response = HTTPURLResponse(url: URL(string: marketDataService.urlString)!, statusCode: 500, httpVersion: nil, headerFields: nil)!
         
+        // Return data in mock request handler
         MockURLProtocol.requestHandler = { request in
             return (response, mockData)
         }
@@ -94,7 +84,8 @@ final class MarketDataServiceTests: XCTestCase {
         do {
             _ = try await marketDataService.getData()
             XCTFail("error was not thrown")
-        } catch { }
+        } catch {
+            XCTAssertEqual(error as! NetworkingManager.NetworkingError, NetworkingManager.NetworkingError.serverError)
+        }
     }
-
 }

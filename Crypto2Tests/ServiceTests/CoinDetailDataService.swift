@@ -14,7 +14,7 @@ final class CoinDetailDataServiceTests: XCTestCase {
     var coin: Coin!
     var sampleCoinDetailData: CoinDetail!
 
-    override func setUpWithError() throws {
+    override func setUp() {
         // Set url session for mock networking
         let configuration = URLSessionConfiguration.ephemeral
         configuration.protocolClasses = [MockURLProtocol.self]
@@ -47,19 +47,13 @@ final class CoinDetailDataServiceTests: XCTestCase {
         
         // set blank urlString
         coinDetailDataService.urlString = ""
-        
-        // Set mock data
-        let mockData = try JSONEncoder().encode(sampleCoinDetailData)
-        
-        // Return data in mock request handler
-        MockURLProtocol.requestHandler = { request in
-            return (HTTPURLResponse(), mockData)
-        }
 
         do {
             _ = try await coinDetailDataService.getCoinDetails()
             XCTFail("error was not thrown")
-        } catch { }
+        } catch {
+            XCTAssertEqual(error as! NetworkingManager.NetworkingError, NetworkingManager.NetworkingError.invalidURLString)
+        }
     }
     
     func testBadResponseStatusCode() async throws {
@@ -80,6 +74,8 @@ final class CoinDetailDataServiceTests: XCTestCase {
         do {
             _ = try await coinDetailDataService.getCoinDetails()
             XCTFail("error was not thrown")
-        } catch { }
+        } catch {
+            XCTAssertEqual(error as! NetworkingManager.NetworkingError, NetworkingManager.NetworkingError.serverError)
+        }
     }
 }

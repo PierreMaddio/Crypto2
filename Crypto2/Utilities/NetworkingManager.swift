@@ -2,8 +2,8 @@
 import Foundation
 
 class NetworkingManager {
-    enum NetworkingError: LocalizedError {
-        case badURLResponse(url: URL)
+    enum NetworkingError: LocalizedError, Error, Equatable {
+        case badURLResponse
         case unknown
         case serverError
         case invalidURLString
@@ -11,7 +11,7 @@ class NetworkingManager {
         var errorDescription: String? {
             switch self {
             case .invalidURLString: return "[🔥] Bad string for URL"
-            case .badURLResponse(url: let url): return "[🔥] Bad response from URL: \(url)"
+            case .badURLResponse: return "[🔥] Bad response from URL"
             case .unknown: return "[⚠️] Unknown error occured"
             case .serverError : return "[🔥] Server Error"
             }
