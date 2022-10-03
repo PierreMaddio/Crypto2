@@ -56,6 +56,7 @@
 		FA8CBFD828DE704000CB3E5A /* DetailViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CBFD728DE704000CB3E5A /* DetailViewModelTests.swift */; };
 		FAAA7F1728E88B690015B007 /* MockCoinDetailDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA8CBFD928DE70B000CB3E5A /* MockCoinDetailDataService.swift */; };
 		FAAA7F1A28E895380015B007 /* PortfolioDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAA7F1928E895380015B007 /* PortfolioDataServiceTests.swift */; };
+		FAAED15128EB80DB00585BE1 /* MockCoin.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAAED15028EB80DB00585BE1 /* MockCoin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +129,7 @@
 		FA8CBFD728DE704000CB3E5A /* DetailViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewModelTests.swift; sourceTree = "<group>"; };
 		FA8CBFD928DE70B000CB3E5A /* MockCoinDetailDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoinDetailDataService.swift; sourceTree = "<group>"; };
 		FAAA7F1928E895380015B007 /* PortfolioDataServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PortfolioDataServiceTests.swift; sourceTree = "<group>"; };
+		FAAED15028EB80DB00585BE1 /* MockCoin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCoin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -425,6 +427,7 @@
 				FA8CBFD328DE6BBB00CB3E5A /* HomeViewModelTests.swift */,
 				FA2E9BA528DC4D0C002606EC /* MockCoinDataService.swift */,
 				FA8CBFD128DE6B5200CB3E5A /* MockMarketDataService.swift */,
+				FAAED15028EB80DB00585BE1 /* MockCoin.swift */,
 			);
 			path = HomeViewModelTests;
 			sourceTree = "<group>";
@@ -624,6 +627,7 @@
 				FA06028C28E5E258008467C3 /* MarketDataServiceTests.swift in Sources */,
 				FAAA7F1A28E895380015B007 /* PortfolioDataServiceTests.swift in Sources */,
 				FA8CBFD828DE704000CB3E5A /* DetailViewModelTests.swift in Sources */,
+				FAAED15128EB80DB00585BE1 /* MockCoin.swift in Sources */,
 				FA8CBFD228DE6B5200CB3E5A /* MockMarketDataService.swift in Sources */,
 				FA06028828E5C5B4008467C3 /* CoinDataServiceTests.swift in Sources */,
 				FA8CBFD428DE6BBB00CB3E5A /* HomeViewModelTests.swift in Sources */,

@@ -35,4 +35,70 @@ final class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(allCoinsSearchText, "")
         XCTAssertEqual(portfolioSearchText, "")
     }
+    
+    @MainActor func testHomeViewCoinsSearch() {
+        viewModel.allCoins = [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave]
+            
+        // Search list
+        viewModel.allCoinsSearchText = "bit"
+        viewModel.filteredCoins = [MockCoin.bitcoin]
+        //viewModel.sortCoins()
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin]) // first sorting (ordering)
+    }
+    
+    @MainActor func testHomeViewCoinsSorted() {
+        viewModel.allCoins = [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave]
+
+        // The different ways of sorting
+        viewModel.sortOption = .rank
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave])
+        
+        viewModel.sortOption = .rankReversed
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.aave, MockCoin.ethereum, MockCoin.bitcoin])
+        
+        viewModel.sortOption = .holdings
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave])
+
+        viewModel.sortOption = .holdingsReversed
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.aave, MockCoin.ethereum, MockCoin.bitcoin])
+
+        viewModel.sortOption = .price
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave])
+
+        viewModel.sortOption = .priceReversed
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.aave, MockCoin.ethereum, MockCoin.bitcoin])
+    }
+    
+    @MainActor func testPortfolioViewCoinsSearch() {
+        viewModel.allCoins = [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave]
+            
+        // Search list
+        viewModel.allCoinsSearchText = "bit"
+        viewModel.portfolioCoins = [MockCoin.bitcoin]
+        //viewModel.sortCoins()
+        XCTAssertEqual(viewModel.portfolioViewCoins, [MockCoin.bitcoin]) // first sorting (ordering)
+    }
+    
+    @MainActor func testPortfolioViewCoinsSorted() {
+        viewModel.allCoins = [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave]
+
+        // The different ways of sorting
+        viewModel.sortOption = .rank
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave])
+        
+        viewModel.sortOption = .rankReversed
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.aave, MockCoin.ethereum, MockCoin.bitcoin])
+        
+        viewModel.sortOption = .holdings
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave])
+
+        viewModel.sortOption = .holdingsReversed
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.aave, MockCoin.ethereum, MockCoin.bitcoin])
+
+        viewModel.sortOption = .price
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.bitcoin, MockCoin.ethereum, MockCoin.aave])
+
+        viewModel.sortOption = .priceReversed
+        XCTAssertEqual(viewModel.homeViewCoins, [MockCoin.aave, MockCoin.ethereum, MockCoin.bitcoin])
+    }
 }

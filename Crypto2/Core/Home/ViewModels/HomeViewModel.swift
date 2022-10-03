@@ -70,6 +70,11 @@ class HomeViewModel: ObservableObject {
         addSubscribers()
     }
     
+//    func sortCoins() {
+//        self.filteredCoins = filterAndSortCoins(text: allCoinsSearchText, coins: allCoins, sort: sortOption)
+//        // Does the same thing as below
+//    }
+
     func addSubscribers() {
         // updates allCoins
         $allCoinsSearchText
