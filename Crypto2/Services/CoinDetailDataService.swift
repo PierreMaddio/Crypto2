@@ -2,7 +2,6 @@
 import Foundation
 
 class CoinDetailDataService: CoinDetailDataServiceProtocol {
-    // var networkManager: NetworkProtocol = NetworkingManager()
     let coin: Coin
     
     // session to be used to make the API call

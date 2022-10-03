@@ -7,7 +7,7 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     private let containerName: String = "PortfolioContainer"
     private let entityName: String = "PortfolioEntity"
     private var fetchedResultsController: NSFetchedResultsController<PortfolioEntity>!
- 
+    
     private var handler: (([PortfolioEntity]) -> Void)?
     
     required override init() {
@@ -113,7 +113,7 @@ extension PortfolioDataService: NSFetchedResultsControllerDelegate {
 }
 
 protocol PortfolioDataServiceProtocol {
-     init()
+    init()
     
     // MARK: - PUBLIC
     func updatePortfolio(coin: Coin, amount: Double)
@@ -126,7 +126,7 @@ protocol PortfolioEntityProtocol {
 }
 
 extension PortfolioEntity: PortfolioEntityProtocol {
-
+    
 }
 
 class MockPortfolioEntity: PortfolioEntityProtocol, Hashable {

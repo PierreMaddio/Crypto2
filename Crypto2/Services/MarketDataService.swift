@@ -1,16 +1,14 @@
 
 import Foundation
 
-class MarketDataService: MarketDataServiceProtocol {
-    //var networkManager: NetworkProtocol = NetworkingManager()
-    
+class MarketDataService: MarketDataServiceProtocol {    
     // session to be used to make the API call
     let session: URLSession
     var urlString = "https://api.coingecko.com/api/v3/global"
     
     init(urlSession: URLSession = .shared) {
-            self.session = urlSession
-        }
+        self.session = urlSession
+    }
     
     func getData() async throws -> GlobalData {
         guard let url = URL(string: urlString) else {
