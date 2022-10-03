@@ -100,11 +100,11 @@ class DetailViewModel: ObservableObject {
     }
 }
 
-enum CoinDetailDataServiceProtocolStore{
+enum CoinDetailDataServiceProtocolStore {
     case api
     case mock
     
-    func getService(coin: Coin) -> any CoinDetailDataServiceProtocol{
+    func getService(coin: Coin) -> any CoinDetailDataServiceProtocol {
         switch self {
         case .api:
             return CoinDetailDataService(coin: coin)

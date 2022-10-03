@@ -19,10 +19,20 @@ final class HomeViewModelTests: XCTestCase {
         viewModel = HomeViewModel(coinDataService: mockCoinDataService, marketDataService: mockMarketDataService)
     }
 
-    @MainActor func test1() {
+    @MainActor func testInitDefault() {
         // when
         let isLoading = viewModel.isLoading
+        let allCoinsSearchText = viewModel.allCoinsSearchText
+        let portfolioSearchText = viewModel.portfolioSearchText
+        
         // then
+        XCTAssertTrue(viewModel.statistics.isEmpty)
+        XCTAssertTrue(viewModel.allCoins.isEmpty)
+        XCTAssertTrue(viewModel.filteredCoins.isEmpty)
+        XCTAssertTrue(viewModel.portfolioCoins.isEmpty)
+        XCTAssertEqual(viewModel.sortOption, .holdings)
         XCTAssertEqual(isLoading, false)
+        XCTAssertEqual(allCoinsSearchText, "")
+        XCTAssertEqual(portfolioSearchText, "")
     }
 }

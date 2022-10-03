@@ -18,6 +18,14 @@ final class DetailViewModelTests: XCTestCase {
         
         viewModel = DetailViewModel(coin: coin, coinDetailService: .mock)
     }
+    
+    @MainActor func testInitDefault() {
+        XCTAssertFalse(viewModel.overviewStatistics.isEmpty)
+        XCTAssertFalse(viewModel.additionalStatistics.isEmpty)
+        XCTAssertNil(viewModel.coinDescription)
+        XCTAssertNil(viewModel.websiteURL)
+        XCTAssertNil(viewModel.redditURL)
+    }
 
     @MainActor func testOverviewStatisticsContains4elements() {
         XCTAssertTrue(viewModel.overviewStatistics.count == 4)
