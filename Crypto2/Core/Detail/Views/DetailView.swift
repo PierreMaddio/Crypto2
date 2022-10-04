@@ -56,9 +56,9 @@ struct DetailView: View {
                 navigationbarTrailingItems
             }
         }.task {
-            do{
+            do {
                 try await vm.reloadData()
-            }catch{
+            } catch {
                 print(error)
             }
         }

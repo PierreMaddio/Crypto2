@@ -19,4 +19,39 @@ class NetworkingManager {
     }
 }
 
+enum GenericError: LocalizedError {
+    case error(Error)
+    
+    var errorDescription: String? {
+        switch self {
+        case .error(let error):
+            return error.localizedDescription
+        }
+    }
+    
+    var failureReason: String? {
+        switch self {
+        case .error(let error):
+            let nsError = error as NSError
+            return nsError.localizedFailureReason
+        }
+    }
+    
+    var helpAnchor: String? {
+        switch self {
+        case .error(let error):
+            let nsError = error as NSError
+            return nsError.helpAnchor
+        }
+    }
+    
+    var recoverySuggestion: String? {
+        switch self {
+        case .error(let error):
+            let nsError = error as NSError
+            return nsError.localizedRecoverySuggestion
+        }
+    }
+}
+
 

@@ -2,7 +2,7 @@
 import Foundation
 import Combine
 
-@MainActor
+
 class HomeViewModel: ObservableObject {
     private let coinDataService: CoinDataServiceProtocol
     private var marketDataService: MarketDataServiceProtocol
@@ -114,10 +114,10 @@ class HomeViewModel: ObservableObject {
         //            .store(in: &cancellables)
     }
     
-    func updatePortfolio(coin: Coin, amount: Double) {
-        portfolioDataService.updatePortfolio(coin: coin, amount: amount)
+    func updatePortfolio(coin: Coin, amount: Double) throws {
+       try portfolioDataService.updatePortfolio(coin: coin, amount: amount)
     }
-   
+    @MainActor
     func portfolioListener() async throws {
         let stream = try portfolioDataService.getPortfolio()
         
@@ -129,17 +129,18 @@ class HomeViewModel: ObservableObject {
         }
     }
     
+    @MainActor
     func reloadData() async throws -> (allCoins: [Coin],statistics: [Statistic]) {
         isLoading = true
+        
         let allCoins = try await coinDataService.getCoins()
         let result = try await marketDataService.getData()
-        
         let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
         self.statistics = statistics
 
         // device vibration
         HapticManager.notification(type: .success)
-        
+        isLoading = false
         return (allCoins, statistics)
     }
     

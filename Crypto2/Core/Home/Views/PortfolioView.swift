@@ -151,10 +151,12 @@ extension PortfolioView {
         guard let coin = selectedCoin,
               let amount = Double(quantityText)
         else { return }
-        
-        // save to portfolio
-        vm.updatePortfolio(coin: coin, amount: amount)
-        
+        do {
+            // save to portfolio
+            try vm.updatePortfolio(coin: coin, amount: amount)
+        } catch {
+            print(error)
+        }
         // show the checkmark
         withAnimation(.easeIn) {
             showCheckMark = true

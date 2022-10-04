@@ -10,8 +10,11 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     
     private var handler: (([PortfolioEntity]) -> Void)?
     
-    required override init() {
+    required init(inMemory: Bool = false) {
         container = NSPersistentContainer(name: containerName)
+        if inMemory {
+            container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+        }
         container.loadPersistentStores { (_, error )in
             if let error = error {
                 print("Error loading Core Data! \(error)")
@@ -34,20 +37,19 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     }
     
     // MARK: - PUBLIC
-    func updatePortfolio(coin: Coin, amount: Double) {
-        print(#function)
+    func updatePortfolio(coin: Coin, amount: Double) throws {
         // check if coin already in portfolio
         if let entity = fetchedResultsController.fetchedObjects?.first(where: { $0.coinID == coin.id }) {
             if amount > 0 {
-                print("\(#function) ::  update")
-                update(entity: entity, amount: amount)
+                // print("\(#function) ::  update")
+                try update(entity: entity, amount: amount)
             } else {
-                print("\(#function) ::  delete")
-                delete(entity: entity)
+                // print("\(#function) ::  delete")
+                try delete(entity: entity)
             }
         } else {
-            print("\(#function) ::  add")
-            add(coin: coin, amount: amount)
+            // print("\(#function) ::  add")
+            try add(coin: coin, amount: amount)
         }
     }
     
@@ -70,40 +72,39 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
         }
     }
     
-    private func add(coin: Coin, amount: Double) {
+    private func add(coin: Coin, amount: Double) throws {
         let entity = PortfolioEntity(context: container.viewContext)
         entity.coinID = coin.id
         entity.amount = amount
-        applyChanges()
+        try applyChanges()
     }
     
-    private func update(entity: PortfolioEntity, amount: Double) {
+    private func update(entity: PortfolioEntity, amount: Double) throws {
         entity.amount = amount
-        applyChanges()
+        try applyChanges()
     }
     
-    private func delete(entity: PortfolioEntity) {
-        print(#function)
+    private func delete(entity: PortfolioEntity) throws {
         container.viewContext.delete(entity)
-        applyChanges()
+        try applyChanges()
     }
     
-    private func save() {
+    private func save() throws{
         do {
             try container.viewContext.save()
         } catch let error {
             print("Error saving to core Data. \(error)")
+            throw error
         }
     }
     
-    private func applyChanges() {
-        save()
+    private func applyChanges() throws{
+        try save()
     }
 }
 
 extension PortfolioDataService: NSFetchedResultsControllerDelegate {
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        print(#function)
         if let handler = handler {
             handler((controller.fetchedObjects as? [PortfolioEntity]) ?? [])
         }else{
@@ -113,10 +114,10 @@ extension PortfolioDataService: NSFetchedResultsControllerDelegate {
 }
 
 protocol PortfolioDataServiceProtocol {
-    init()
+    init(inMemory: Bool)
     
     // MARK: - PUBLIC
-    func updatePortfolio(coin: Coin, amount: Double)
+    func updatePortfolio(coin: Coin, amount: Double) throws
     func getPortfolio() throws -> AsyncStream<[any PortfolioEntityProtocol]>
 }
 
@@ -152,27 +153,27 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
     var portfolioEntities: Set<MockPortfolioEntity> = .init()
     private var handler: (([MockPortfolioEntity]) -> Void)?
     
-    required init(){}
+    required init(inMemory: Bool = false) {}
     
-    func updatePortfolio(coin: Coin, amount: Double) {
+    func updatePortfolio(coin: Coin, amount: Double) throws{
         if let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) {
             if amount > 0 {
-                print("\(#function) ::  update")
                 update(entity: entity, amount: amount)
             } else {
-                print("\(#function) ::  delete")
                 delete(entity: entity)
             }
         } else {
-            print("\(#function) ::  add")
             add(coin: coin, amount: amount)
         }
     }
     
     func getPortfolio() throws -> AsyncStream<[any PortfolioEntityProtocol]> {
         AsyncStream { continuation in
+            // initial value yield
             continuation.yield(Array(portfolioEntities))
+            // additional updates
             handler = { entities in
+                //print("\(#function) :: return :: \(entities.count)")
                 continuation.yield(entities)
             }
         }
@@ -180,6 +181,7 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
     
     private func add(coin: Coin, amount: Double) {
         let entity = MockPortfolioEntity(amount: amount, coinID: coin.id)
+        portfolioEntities.insert(entity)
         applyChanges()
     }
     
@@ -189,12 +191,12 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
     }
     
     private func delete(entity: MockPortfolioEntity) {
-        print(#function)
         portfolioEntities.remove(entity)
         applyChanges()
     }
     
     func applyChanges() {
+        //print("\(#function) :: \(portfolioEntities.count)")
         if let handler = handler {
             handler(Array(portfolioEntities))
         } else {

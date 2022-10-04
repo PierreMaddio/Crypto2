@@ -8,7 +8,7 @@ struct HomeView: View {
     @State private var showSettingsView: Bool = false // sheet
     @State private var selectedCoin: Coin? = nil
     @State private var showDetailView: Bool = false
-    
+    @State private var alert: (isPresented: Bool, error: GenericError?) = (false, nil)
     var body: some View {
         ZStack {
             // background layer
@@ -40,6 +40,7 @@ struct HomeView: View {
                         } else {
                             portfolioCoinList
                         }
+                        
                     }
                     .transition(.move(edge: .trailing))
                 }
@@ -47,6 +48,13 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showSettingsView) {
                 SettingsView()
+            }.alert(isPresented: $alert.isPresented, error: alert.error) {
+                Button {
+                    alert = (false, nil)
+                } label: {
+                    Text("OK")
+                }
+
             }
         }
         .background(
@@ -63,7 +71,7 @@ struct HomeView: View {
                 self.vm.statistics = statictics
                 try await vm.portfolioListener()
             } catch {
-                print(error)
+                alert = (true, .error(error))
             }
         }
     }
@@ -202,17 +210,23 @@ extension HomeView {
             
             Button { //
                 //withAnimation(.linear(duration: 2)) {
-                // reload Data
-                Task(operation: {
-                    do {
-                        try await vm.reloadData()
-                    } catch {
-                        print(error)
-                    }
-                })
-                
+                    // reload Data
+                    Task(operation: {
+                        do {
+                            let (allCoins, statistics) = try await vm.reloadData()
+                            vm.allCoins = allCoins
+                            vm.statistics = statistics
+                        } catch {
+                            alert = (true, .error(error))
+                        }
+                    })
+                //}
             } label: {
-                Image(systemName: "goforward")
+                if  vm.isLoading{
+                    ProgressView()
+                }else{
+                    Image(systemName: "goforward")
+                }
             }
             .rotationEffect(Angle(degrees: vm.isLoading ? 360 : 0), anchor: .center)
             
@@ -220,5 +234,6 @@ extension HomeView {
         .font(.caption)
         .foregroundColor(Color.theme.secondaryText)
         .padding(.horizontal)
+        //.animation(.linear(duration: 2), value: vm.allCoins)
     }
 }

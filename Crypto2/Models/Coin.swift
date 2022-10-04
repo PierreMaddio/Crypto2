@@ -43,7 +43,7 @@ import Foundation
    }
  */
 
-struct Coin: Identifiable, Codable, Equatable {
+struct Coin: Identifiable, Codable, Equatable, Hashable {
     let id, symbol, name: String
     let image: String
     let currentPrice: Double
@@ -109,12 +109,12 @@ struct Coin: Identifiable, Codable, Equatable {
     
 }
 
-struct SparklineIn7D: Codable, Equatable {
+struct SparklineIn7D: Codable, Equatable, Hashable {
     let price: [Double]?
 }
 
-extension Sequence where Element == Coin{
-    var totalValue: Double{
+extension Sequence where Element == Coin {
+    var totalValue: Double {
         self.map { coin in
             coin.currentHoldingsValue
         }.reduce(0, +)
