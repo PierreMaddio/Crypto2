@@ -56,7 +56,7 @@ extension SettingsView {
                     .resizable()
                     .frame(width: 100, height: 100)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
-                Text("This application was developed as part of my OpenClassrooms course as my personal project.It uses MVVM architecture, Combine and Core Data.")
+                Text("This application was developed as part of my OpenClassrooms course as my personal project.It uses MVVM architecture, Swift Concurrency, Combine and Core Data.")
                     .font(.callout)
                     .fontWeight(.medium)
                     .foregroundColor(Color.theme.accent)

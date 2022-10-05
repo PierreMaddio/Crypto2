@@ -6,6 +6,8 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     private let container: NSPersistentContainer
     private let containerName: String = "PortfolioContainer"
     private let entityName: String = "PortfolioEntity"
+    
+    // A controller that you use to manage the results of a Core Data fetch request and to display data to the user.
     private var fetchedResultsController: NSFetchedResultsController<PortfolioEntity>!
     
     private var handler: (([PortfolioEntity]) -> Void)?

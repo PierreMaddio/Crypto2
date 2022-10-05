@@ -40,7 +40,7 @@ final class PortfolioDataServiceTests: XCTestCase {
             for try await ent in stream {
                 entities = ent
                 if initial {
-                    //The first call should be empty since you are using in Memory there is no permanent storage for testing
+                    // The first call should be empty since you are using in Memory there is no permanent storage for testing
                     XCTAssert(entities.isEmpty)
                     initial = false
                 } else {
@@ -49,8 +49,8 @@ final class PortfolioDataServiceTests: XCTestCase {
             }
             return entities
         }.value
-        //Check that the updated value is correct
-        //The values will be equal because we only expected additions
+        // Check that the updated value is correct
+        // The values will be equal because we only expected additions
         XCTAssertEqual(newEntities.count, updatedEntities.count)
     }
     func testUpdatePortfolio() async throws {
@@ -71,18 +71,18 @@ final class PortfolioDataServiceTests: XCTestCase {
             for try await ent in stream {
                 entities = ent
                 if initial {
-                    //The first call should be empty since you are using in Memory there is no permanent storage for testing
+                    // The first call should be empty since you are using in Memory there is no permanent storage for testing
                     XCTAssert(entities.isEmpty)
                     initial = false
                 } else {
-                    //Breaks after initial update
+                    // Breaks after initial update
                     break
                 }
             }
             return entities
         }.value
-        //Check that the updated value is correct
-        //Check that stored amount == expected amount
+        // Check that the updated value is correct
+        // Check that stored amount == expected amount
         XCTAssertEqual(updatedEntities.first?.amount, amount)
         //Change amount
         amount = 20
@@ -111,7 +111,7 @@ final class PortfolioDataServiceTests: XCTestCase {
             }
             return entities
         }.value
-        //First element amount is equal to updated amount
+        // First element amount is equal to updated amount
         XCTAssertEqual(updatedEntities.first?.amount, amount)
     }
     
@@ -133,7 +133,7 @@ final class PortfolioDataServiceTests: XCTestCase {
             for try await ent in stream {
                 entities = ent
                 if initial {
-                    //The first call should be empty since you are using in Memory there is no permanent storage for testing
+                    // The first call should be empty since you are using in Memory there is no permanent storage for testing
                     XCTAssert(entities.isEmpty)
                     initial = false
                 } else {
@@ -143,9 +143,9 @@ final class PortfolioDataServiceTests: XCTestCase {
             }
             return entities
         }.value
-        //Check that the updated value is correct
-        //the updated entities will have 1 coin because one was not added
-        //value was zero so expected deletion.
+        // Check that the updated value is correct
+        // the updated entities will have 1 coin because one was not added
+        // value was zero so expected deletion.
         XCTAssertEqual(newEntities.count - 1, updatedEntities.count)
     }
 }

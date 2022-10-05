@@ -146,11 +146,6 @@ extension HomeView {
             }
         }
         .listStyle(PlainListStyle())
-//        .onAppear {
-//            Task {
-//                try await vm.reloadData()
-//            }
-//        }
     }
     
     private var portfolioEmptyText: some View {
@@ -208,8 +203,7 @@ extension HomeView {
                 }
             }
             
-            Button { //
-                //withAnimation(.linear(duration: 2)) {
+            Button {
                     // reload Data
                     Task(operation: {
                         do {
@@ -220,7 +214,6 @@ extension HomeView {
                             alert = (true, .error(error))
                         }
                     })
-                //}
             } label: {
                 if  vm.isLoading{
                     ProgressView()
@@ -234,6 +227,5 @@ extension HomeView {
         .font(.caption)
         .foregroundColor(Color.theme.secondaryText)
         .padding(.horizontal)
-        //.animation(.linear(duration: 2), value: vm.allCoins)
     }
 }
