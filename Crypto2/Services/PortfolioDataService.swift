@@ -166,7 +166,6 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
     required init(inMemory: Bool = false) {}
     
     func updatePortfolio(coin: Coin, amount: Double) throws{
-        print("\(type(of: self)) :: \(#function)")
         if let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) {
             if amount > 0 {
                 update(entity: entity, amount: amount)
@@ -184,7 +183,6 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
             continuation.yield(Array(portfolioEntities))
             // additional updates
             handler = { entities in
-                print("\(#function) :: return :: \(entities.count)")
                 continuation.yield(entities)
             }
         }

@@ -136,7 +136,6 @@ final class HomeViewModelTests: XCTestCase {
     }
     
     @MainActor func testUpdatePortfolioDelete() async throws{
-        print("\(#function) :: enter")
         let (allCoins, stat) = try await viewModel.reloadData()
         viewModel.allCoins = allCoins
         viewModel.statistics = stat

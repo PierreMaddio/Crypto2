@@ -31,14 +31,14 @@ class HomeViewModel: ObservableObject {
         }
         // sorting, show only sorted coins
         switch sortOption {
-            case .rank, .holdings:
-                return allCoins.sorted(by: { $0.rank < $1.rank })
-            case .rankReversed, .holdingsReversed:
-                return allCoins.sorted(by: { $0.rank > $1.rank })
-            case .price:
-                return allCoins.sorted(by: { $0.currentPrice > $1.currentPrice })
-            case .priceReversed:
-                return allCoins.sorted(by: { $0.currentPrice < $1.currentPrice })
+        case .rank, .holdings:
+            return allCoins.sorted(by: { $0.rank < $1.rank })
+        case .rankReversed, .holdingsReversed:
+            return allCoins.sorted(by: { $0.rank > $1.rank })
+        case .price:
+            return allCoins.sorted(by: { $0.currentPrice > $1.currentPrice })
+        case .priceReversed:
+            return allCoins.sorted(by: { $0.currentPrice < $1.currentPrice })
         }
     }
     
@@ -48,27 +48,27 @@ class HomeViewModel: ObservableObject {
             return portfolioCoins
         }
         // else show filteredPortfolioCoins
-
+        
         // sorting, show only portfolio sorted coins
         switch sortOption {
-            case .rank, .holdings:
-                return portfolioCoins.sorted(by: { $0.rank < $1.rank })
-            case .rankReversed, .holdingsReversed:
-                return portfolioCoins.sorted(by: { $0.rank > $1.rank })
-            case .price:
-                return portfolioCoins.sorted(by: { $0.currentPrice > $1.currentPrice })
-            case .priceReversed:
-                return portfolioCoins.sorted(by: { $0.currentPrice < $1.currentPrice })
+        case .rank, .holdings:
+            return portfolioCoins.sorted(by: { $0.rank < $1.rank })
+        case .rankReversed, .holdingsReversed:
+            return portfolioCoins.sorted(by: { $0.rank > $1.rank })
+        case .price:
+            return portfolioCoins.sorted(by: { $0.currentPrice > $1.currentPrice })
+        case .priceReversed:
+            return portfolioCoins.sorted(by: { $0.currentPrice < $1.currentPrice })
         }
     }
-
+    
     init(coinDataService: CoinDataServiceProtocol = CoinDataService(), marketDataService: MarketDataServiceProtocol = MarketDataService(), portfolioDataService:  PortfolioDataServiceProtocol = PortfolioDataService()) {
         self.coinDataService = coinDataService
         self.marketDataService = marketDataService
         self.portfolioDataService = portfolioDataService
         addSubscribers()
     }
-
+    
     func addSubscribers() {
         // updates allCoins
         $allCoinsSearchText
@@ -90,23 +90,19 @@ class HomeViewModel: ObservableObject {
     }
     
     func updatePortfolio(coin: Coin, amount: Double) throws {
-        print(#function)
-       try portfolioDataService.updatePortfolio(coin: coin, amount: amount)
+        try portfolioDataService.updatePortfolio(coin: coin, amount: amount)
     }
     
     @MainActor
     func portfolioListener() async throws  {
         let stream = try portfolioDataService.getPortfolio()
         
-            for await entities in stream {
-                print("updated \(entities.count)" )
-                
-                self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
-                print(portfolioCoins)
-                let result = try await marketDataService.getData()
-                let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
-                self.statistics = statistics
-            }
+        for await entities in stream {
+            self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
+            let result = try await marketDataService.getData()
+            let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
+            self.statistics = statistics
+        }
     }
     
     @MainActor
@@ -117,7 +113,7 @@ class HomeViewModel: ObservableObject {
         let result = try await marketDataService.getData()
         let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
         self.statistics = statistics
-
+        
         // device vibration
         HapticManager.notification(type: .success)
         isLoading = false
@@ -157,13 +153,11 @@ class HomeViewModel: ObservableObject {
     }
     
     private func mapAllCoinsToPortfolioCoins(allCoins: [Coin], portfolioEntities: [PortfolioEntityProtocol]) -> [Coin] {
-        print("\(#function) \(allCoins.count)")
         return allCoins
             .compactMap { (coin) -> Coin? in
                 guard let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) else {
                     return nil
                 }
-                print("\(#function) \(coin)")
                 return coin.updateHoldings(amount: entity.amount)
             }
     }

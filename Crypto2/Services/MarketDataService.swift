@@ -25,42 +25,6 @@ class MarketDataService: MarketDataServiceProtocol {
         
         return decodedMarket
     }
-    
-//    func getData() async throws -> GlobalData {
-//        print("\(#function) :: enter")
-//        guard let url = URL(string: urlString) else {
-//            throw NetworkingManager.NetworkingError.invalidURLString
-//        }
-//        print("\(#function) :: after url")
-//        let urlRequest = URLRequest(url: url)
-//        typealias Continuation = CheckedContinuation<GlobalData, Error>
-//        return try await withCheckedThrowingContinuation({ continuation in
-//        let task = session.dataTask(with: urlRequest, completionHandler: { data, urlResponse, error in
-//            if let error = error {
-//                continuation.resume(throwing: error)
-//            } else {
-//                print("\(#function) :: after data request")
-//                guard (urlResponse as? HTTPURLResponse)?.statusCode == 200, let data = data else {
-//                    continuation.resume(throwing: NetworkingManager.NetworkingError.serverError)
-//                    return
-//                }
-//                do {
-//                    let decodedCoins = try JSONDecoder().decode(GlobalData.self, from: data)
-//                    print("\(#function) :: exit")
-//                    continuation.resume(returning: decodedCoins)
-//                } catch {
-//                    continuation.resume(throwing: error)
-//                }
-//            }
-//        })
-//            let _: NSKeyValueObservation = task.progress.observe(\.fractionCompleted){progress, _ in
-//                print(String(format: "progress \(#function) %0.2f", progress.fractionCompleted))
-//            }
-//            print("resume")
-//            task.resume()
-//            print(task.state.rawValue)
-//        })
-//    }
 }
 
 protocol MarketDataServiceProtocol {
