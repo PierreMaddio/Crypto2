@@ -56,17 +56,25 @@ class PortfolioDataService: NSObject, PortfolioDataServiceProtocol {
     }
     
     // MARK: - PRIVATE
+    /// Emits an array of current objects stored in the CoreData store when the
+    /// `NSFetchedResultsControllerDelegate` calls `controllerDidChangeContent`
     func getPortfolio() throws -> AsyncStream<[PortfolioEntityProtocol]> {
         let initial = try initializeFetchedResultsController()
         return AsyncStream { continuation in
+            // Emitting previously stored content
             continuation.yield(initial)
+            //Set the handler / go between delegate and stream
             handler = { entities in
+                // Emitting changed content
                 continuation.yield(entities)
             }
+            // When the stream is cancelled or `finish`
             continuation.onTermination = { [ self] _ in
                 Task{
                     await MainActor.run {
+                        //Stop the `NSFetchedResultsControllerDelegate`
                         fetchedResultsController.delegate = nil
+                        // `deinit` handler / go between delegate and stream
                         handler = nil
                     }
                 }
@@ -158,6 +166,7 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
     required init(inMemory: Bool = false) {}
     
     func updatePortfolio(coin: Coin, amount: Double) throws{
+        print("\(type(of: self)) :: \(#function)")
         if let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) {
             if amount > 0 {
                 update(entity: entity, amount: amount)
@@ -175,7 +184,7 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
             continuation.yield(Array(portfolioEntities))
             // additional updates
             handler = { entities in
-                //print("\(#function) :: return :: \(entities.count)")
+                print("\(#function) :: return :: \(entities.count)")
                 continuation.yield(entities)
             }
         }
@@ -198,7 +207,6 @@ class MockPortfolioDataService: PortfolioDataServiceProtocol {
     }
     
     func applyChanges() {
-        //print("\(#function) :: \(portfolioEntities.count)")
         if let handler = handler {
             handler(Array(portfolioEntities))
         } else {

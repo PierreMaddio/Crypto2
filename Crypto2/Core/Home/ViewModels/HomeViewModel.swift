@@ -9,9 +9,8 @@ class HomeViewModel: ObservableObject {
     private let portfolioDataService: PortfolioDataServiceProtocol
     private var cancellables = Set<AnyCancellable>()
     
-    // anything subscribed to the this publisher will then get updated
+    // anything subscribed to the these publishers will then get updated
     @Published var statistics: [Statistic] = []
- 
     @Published var isLoading: Bool = false
     @Published var allCoinsSearchText: String = ""
     @Published var portfolioSearchText: String = ""
@@ -69,11 +68,6 @@ class HomeViewModel: ObservableObject {
         self.portfolioDataService = portfolioDataService
         addSubscribers()
     }
-    
-//    func sortCoins() {
-//        self.filteredCoins = filterAndSortCoins(text: allCoinsSearchText, coins: allCoins, sort: sortOption)
-//        // Does the same thing as below
-//    }
 
     func addSubscribers() {
         // updates allCoins
@@ -93,40 +87,26 @@ class HomeViewModel: ObservableObject {
                 self?.filteredCoins = returnedCoins
             }
             .store(in: &cancellables)
-       //  updates portfolio
-//        $allCoins
-//            .combineLatest(portfolioDataService.$savedEntities)
-//            .map(mapAllCoinsToPortfolioCoins) // the parameters are the same as the subscribers
-//            .sink { [weak self] (returnedCoins) in
-//                guard let self = self else { return }
-//                self.portfolioCoins = self.sortPortfolioCoinsIfNeeded(coins: returnedCoins)
-//            }
-//            .store(in: &cancellables)
-        
-        // updates marketData
-        //        marketDataService.$marketData
-        //            .combineLatest($portfolioCoins) // ???
-        //            .map(markGlobalMarketData)
-        //            .sink { [weak self] (returnedStats) in
-        //                self?.statistics = returnedStats
-        //                self?.isLoading = false
-        //            }
-        //            .store(in: &cancellables)
     }
     
     func updatePortfolio(coin: Coin, amount: Double) throws {
+        print(#function)
        try portfolioDataService.updatePortfolio(coin: coin, amount: amount)
     }
+    
     @MainActor
-    func portfolioListener() async throws {
+    func portfolioListener() async throws  {
         let stream = try portfolioDataService.getPortfolio()
         
-        for await entities in stream {
-            self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
-            let result = try await marketDataService.getData()
-            let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
-            self.statistics = statistics
-        }
+            for await entities in stream {
+                print("updated \(entities.count)" )
+                
+                self.portfolioCoins = mapAllCoinsToPortfolioCoins(allCoins: allCoins, portfolioEntities: entities)
+                print(portfolioCoins)
+                let result = try await marketDataService.getData()
+                let statistics = markGlobalMarketData(marketDataModel: result.data, portfolioCoins: portfolioCoins)
+                self.statistics = statistics
+            }
     }
     
     @MainActor
@@ -176,24 +156,14 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-//    private func sortPortfolioCoinsIfNeeded(coins: [Coin]) -> [Coin] {
-//        // will only sort by holdings or reversed holdings if needed
-//        switch sortOption {
-//        case .holdings:
-//            return coins.sorted(by: { $0.currentHoldingsValue > $1.currentHoldingsValue })
-//        case .holdingsReversed:
-//            return coins.sorted(by: { $0.currentHoldingsValue < $1.currentHoldingsValue })
-//        default:
-//            return coins
-//        }
-//    }
-    
     private func mapAllCoinsToPortfolioCoins(allCoins: [Coin], portfolioEntities: [PortfolioEntityProtocol]) -> [Coin] {
-        allCoins
+        print("\(#function) \(allCoins.count)")
+        return allCoins
             .compactMap { (coin) -> Coin? in
                 guard let entity = portfolioEntities.first(where: { $0.coinID == coin.id }) else {
                     return nil
                 }
+                print("\(#function) \(coin)")
                 return coin.updateHoldings(amount: entity.amount)
             }
     }

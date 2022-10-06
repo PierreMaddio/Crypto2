@@ -69,7 +69,7 @@ struct HomeView: View {
                 let (allCoins, statictics) = try await vm.reloadData()
                 self.vm.allCoins = allCoins
                 self.vm.statistics = statictics
-                try await vm.portfolioListener()
+                _ = try await vm.portfolioListener()
             } catch {
                 alert = (true, .error(error))
             }

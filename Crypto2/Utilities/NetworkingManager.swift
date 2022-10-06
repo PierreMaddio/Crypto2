@@ -19,9 +19,9 @@ class NetworkingManager {
     }
 }
 
+///Converts `Error` to `LocalizedError`
 enum GenericError: LocalizedError {
     case error(Error)
-    
     var errorDescription: String? {
         switch self {
         case .error(let error):
@@ -34,6 +34,7 @@ enum GenericError: LocalizedError {
         case .error(let error):
             let nsError = error as NSError
             return nsError.localizedFailureReason
+        
         }
     }
     
