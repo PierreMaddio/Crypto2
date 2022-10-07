@@ -6,15 +6,15 @@ on:
 
 jobs:
   run-tests:
-    runs-on: macos-12
+    runs-on: macos-latest
     
     timeout-minutes: 10
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: Select Xcode
-      run: sudo xcode-select -switch /Applications/Xcode_13.4.app && /usr/bin/xcodebuild -version
+      run: sudo xcode-select -switch /Applications/Xcode_14.0.1.app && /usr/bin/xcodebuild -version
       
     - name: Run tests
-      run: xcodebuild clean build test -scheme Crypto2 -project Crypto2.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.5' CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO
+      run: xcodebuild clean build test -scheme Crypto2 -project Crypto2.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.5'
