@@ -7,17 +7,10 @@ on:
 jobs:
     run-tests:
         runs-on: macos-latest
-        
         timeout-minutes: 10
-        
         steps:
         - uses: actions/checkout@v3
-        
         - name: Select Xcode
-        run: sudo xcode-select -switch /Applications/Xcode_14.0.app
-        
-        - name: Xcode version
-        run: /usr/bin/xcodebuild -version
-      
+        run: sudo xcode-select -switch /Applications/Xcode_14.0.app && /usr/bin/xcodebuild -version
         - name: Run tests
         run: xcodebuild test -scheme Crypto2 -project Crypto2.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 13,OS=16.0'
