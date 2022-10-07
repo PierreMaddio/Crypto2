@@ -7,9 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA03934E28EF851200726AA2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA03934D28EF851200726AA2 /* GoogleService-Info.plist */; };
 		FA03935128EF858000726AA2 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = FA03935028EF858000726AA2 /* FirebaseAnalyticsWithoutAdIdSupport */; };
 		FA03935428F0086300726AA2 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = FA03935328F0086300726AA2 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		FA03935628F0C8C300726AA2 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = FA03935528F0C8C300726AA2 /* GoogleService-Info.plist */; };
 		FA06028628E5C540008467C3 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA06028528E5C540008467C3 /* MockURLProtocol.swift */; };
 		FA06028828E5C5B4008467C3 /* CoinDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA06028728E5C5B4008467C3 /* CoinDataServiceTests.swift */; };
 		FA06028A28E5C6B5008467C3 /* CoinDetailDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA06028928E5C6B5008467C3 /* CoinDetailDataService.swift */; };
@@ -80,7 +80,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		FA03934D28EF851200726AA2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		FA03935528F0C8C300726AA2 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		FA06028528E5C540008467C3 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
 		FA06028728E5C5B4008467C3 /* CoinDataServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDataServiceTests.swift; sourceTree = "<group>"; };
 		FA06028928E5C6B5008467C3 /* CoinDetailDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailDataService.swift; sourceTree = "<group>"; };
@@ -228,8 +228,8 @@
 				FA22646C28D91D22000C9C38 /* Services */,
 				FA22646D28D91D29000C9C38 /* Models */,
 				FA22646E28D91D5F000C9C38 /* Core */,
+				FA03935528F0C8C300726AA2 /* GoogleService-Info.plist */,
 				FA22644228D91BE2000C9C38 /* Assets.xcassets */,
-				FA03934D28EF851200726AA2 /* GoogleService-Info.plist */,
 				FA22644428D91BE2000C9C38 /* Preview Content */,
 			);
 			path = Crypto2;
@@ -577,7 +577,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FA22647D28D9214A000C9C38 /* LaunchScreen.storyboard in Resources */,
-				FA03934E28EF851200726AA2 /* GoogleService-Info.plist in Resources */,
+				FA03935628F0C8C300726AA2 /* GoogleService-Info.plist in Resources */,
 				FA22644628D91BE2000C9C38 /* Preview Assets.xcassets in Resources */,
 				FA22644328D91BE2000C9C38 /* Assets.xcassets in Resources */,
 			);
