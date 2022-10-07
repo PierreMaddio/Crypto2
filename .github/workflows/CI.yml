@@ -17,5 +17,5 @@ jobs:
       run: sudo xcode-select -switch /Applications/Xcode_13.4.app && /usr/bin/xcodebuild -version
       
     - name: Run tests
-      run: xcodebuild test -scheme Crypto2 -project Crypto2.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.5'
+      run: xcodebuild test -scheme Crypto2 -project Crypto2.xcodeproj -destination 'platform=iOS Simulator,name=iPhone 13,OS=15.5' -TEST-HOST="Crypto2"
       
